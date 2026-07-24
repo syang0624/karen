@@ -1,7 +1,7 @@
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 
 const COOKIE_NAME = "karen_user";
-const developmentSecret = randomUUID();
+let developmentSecret: string | undefined;
 
 function secret() {
   const value = process.env.KAREN_SESSION_SECRET;
@@ -9,6 +9,7 @@ function secret() {
   if (process.env.NODE_ENV === "production") {
     throw new Error("KAREN_SESSION_SECRET is required in production");
   }
+  developmentSecret ??= randomUUID();
   return developmentSecret;
 }
 
