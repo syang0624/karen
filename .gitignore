@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .omc/
+
+# Codindg Agents
+AGENTS.md
+CLAUDE.md
+.claude
+.codex
