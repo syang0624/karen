@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,11 +13,44 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "BlackBox — AI Concierge for Customer Service Calls",
-  description:
-    "BlackBox navigates phone trees, waits on hold, and briefs you when a human picks up.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
+  let metadataBase: URL | undefined;
+  try {
+    if (host) metadataBase = new URL(`${protocol}://${host}`);
+  } catch {
+    metadataBase = undefined;
+  }
+  const title = "karen — Evidence-backed customer service";
+  const description =
+    "Build a sourced, deadline-aware customer-service case and approve every external action.";
+  return {
+    metadataBase,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: [
+        {
+          url: "/og.png",
+          width: 1730,
+          height: 909,
+          alt: "karen — Customer service, with receipts.",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og.png"],
+    },
+  };
+}
 
 export default function RootLayout({
   children,

@@ -121,10 +121,14 @@ The web application communicates with the karen API over REST and server-sent ev
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `POST` | `/cases` | Create a case from the user's problem description |
-| `GET` | `/cases/:id` | Retrieve the assembled case |
-| `GET` | `/cases/:id/stream` | Stream typed case, evidence, research, plan, approval, execution, reply, and error events |
-| `POST` | `/cases/:id/approvals` | Approve or reject one immutable action proposal |
+| `POST` | `/api/cases` | Create a production or explicitly offline case |
+| `GET` | `/api/cases/:id` | Retrieve the assembled case |
+| `GET` | `/api/cases/:id/stream` | Stream replayable typed case events |
+| `POST` | `/api/cases/:id/approvals` | Approve or reject one immutable action proposal |
+| `POST` | `/api/cases/:id/evidence` | Fingerprint a bounded user-selected upload |
+| `DELETE` | `/api/cases/:id` | Delete a case owned by the current app user |
+| `POST` | `/api/connections/composio` | Create a scoped Gmail Connect Link |
+| `POST` | `/api/webhooks/composio` | Verify and ingest deduplicated Composio events |
 
 Composio events enter through a signature-verified webhook endpoint. Events are deduplicated before they can change case state.
 
@@ -134,8 +138,8 @@ Composio events enter through a signature-verified webhook endpoint. Events are 
 
 - Node.js 20 or later
 - npm
-- A running karen API
-- Connected Composio, Octen, LLM, database, and object-storage services for the API
+- Composio and Octen credentials for production mode
+- No provider credentials for the sanitized offline demo
 
 ### Install and run
 
@@ -148,28 +152,26 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### Frontend environment
+### Environment
 
-Create `.env.local` with the public URL of the karen API:
-
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-Only the API origin belongs in browser-visible configuration. Composio, Octen, LLM, database, object-storage, and webhook secrets are server-only and must never use the `NEXT_PUBLIC_` prefix.
+Copy `.env.example` to `.env.local`. The UI and API are same-origin, so no
+browser-visible provider configuration is needed. Composio, Octen, LLM, and
+webhook credentials are server-only and must never use the `NEXT_PUBLIC_`
+prefix.
 
 The API runtime is configured with:
 
 ```bash
 COMPOSIO_API_KEY=
+COMPOSIO_GMAIL_AUTH_CONFIG_ID=
 COMPOSIO_WEBHOOK_SECRET=
 OCTEN_API_KEY=
+LLM_API_URL=
 LLM_API_KEY=
-DATABASE_URL=
-OBJECT_STORAGE_ENDPOINT=
-OBJECT_STORAGE_BUCKET=
-OBJECT_STORAGE_ACCESS_KEY=
-OBJECT_STORAGE_SECRET_KEY=
+LLM_MODEL=
+KAREN_SESSION_SECRET=
+KAREN_ENABLE_OFFLINE_DEMO=false
+KAREN_CLAIMS_EMAIL=
 ```
 
 Use the environment-specific secret manager for deployed instances. Do not commit populated environment files.
@@ -181,7 +183,27 @@ npm run dev      # Start the development server
 npm run build    # Create a production build
 npm run start    # Run the production build
 npm run lint     # Run ESLint
+npm test         # Run security and contract tests
+npm run build:next # Optional native Next.js compatibility build
 ```
+
+## Demo and production behavior
+
+The **offline demo** is selected explicitly. It uses sanitized evidence and
+research fixtures, can play the existing prerecorded Asiana IVR asset, labels
+every execution as simulated, and never calls Composio, Octen, an LLM, Gmail,
+or a phone provider.
+
+The **production path** never falls back to fixtures. It creates a per-user
+Composio Connect Link, retrieves a narrow Gmail result set, sends only
+constructively allowlisted public descriptors to Octen, and stops with a visible
+error when required credentials or provider results are unavailable.
+
+The checked-in store is process-local so the project runs without infrastructure.
+Before a multi-instance production deployment, replace it with Postgres
+transactions and durable event/job tables, and configure S3-compatible object
+storage plus malware scanning for retained upload bytes. Until then, uploads
+retain a metadata fingerprint only and cannot be attached to provider actions.
 
 ## Security model
 

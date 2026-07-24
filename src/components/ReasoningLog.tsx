@@ -40,7 +40,7 @@ export default function ReasoningLog({ entries }: ReasoningLogProps) {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-400" />
         </span>
         <p className="text-xs uppercase tracking-widest text-zinc-500">
-          Agent Reasoning
+          Activity &amp; Evidence Log
         </p>
       </div>
       <div
@@ -48,7 +48,7 @@ export default function ReasoningLog({ entries }: ReasoningLogProps) {
         className="flex-1 overflow-y-auto px-4 py-2 font-mono text-xs"
       >
         {entries.length === 0 ? (
-          <p className="text-zinc-600">Waiting for agent activity...</p>
+          <p className="text-zinc-600">Waiting for case activity...</p>
         ) : (
           <div className="space-y-1">
             {entries.map((entry) => {

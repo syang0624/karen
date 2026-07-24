@@ -220,7 +220,7 @@ export default function GraphView({ data }: GraphViewProps) {
       >
         <div className="text-center text-zinc-600">
           <GraphIcon className="mx-auto h-12 w-12" />
-          <p className="mt-2 text-sm">Entity graph will appear here</p>
+          <p className="mt-2 text-sm">Evidence provenance will appear here</p>
         </div>
       </div>
     );
@@ -234,18 +234,18 @@ export default function GraphView({ data }: GraphViewProps) {
     >
       <div className="absolute left-3 top-2 z-10 flex items-center gap-2">
         <p className="text-[10px] font-medium uppercase tracking-widest text-zinc-400">
-          Entity Graph
+          Evidence Provenance
         </p>
         <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/80 px-2 py-0.5">
           <span className="text-[10px] tabular-nums text-emerald-400">
             {data.nodes.length}
           </span>
-          <span className="text-[9px] text-zinc-600">nodes</span>
+          <span className="text-[9px] text-zinc-600">records</span>
           <span className="text-zinc-700">·</span>
           <span className="text-[10px] tabular-nums text-blue-400">
             {data.edges.length}
           </span>
-          <span className="text-[9px] text-zinc-600">edges</span>
+          <span className="text-[9px] text-zinc-600">links</span>
         </div>
       </div>
       <canvas

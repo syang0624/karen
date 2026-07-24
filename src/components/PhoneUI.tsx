@@ -43,7 +43,7 @@ export default function PhoneUI({ status, company, ivrLog, onHangUp }: PhoneUIPr
       {/* Phone header */}
       <div className="mb-4 text-center">
         <p className="text-xs uppercase tracking-widest text-zinc-500">
-          {company ?? "BlackBox Phone"}
+          {company ?? "karen Phone"}
         </p>
         <div className="mt-2 flex items-center justify-center gap-2">
           {display.pulse && (
@@ -78,12 +78,12 @@ export default function PhoneUI({ status, company, ivrLog, onHangUp }: PhoneUIPr
         {status === "on_hold" && (
           <div className="text-center">
             <div className="mx-auto flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
+              {[16, 24, 32, 22, 14].map((height, i) => (
                 <div
                   key={i}
                   className="w-1 rounded-full bg-purple-400"
                   style={{
-                    height: `${12 + Math.random() * 20}px`,
+                    height: `${height}px`,
                     animation: `pulse 1.${i + 2}s ease-in-out infinite`,
                   }}
                 />
